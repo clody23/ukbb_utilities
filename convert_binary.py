@@ -12,8 +12,8 @@ if len(sys.argv[1:])< 2:
 ## number of lines expected 265 SNPs X 2 X ~400000 samples
 n_snps = 265
 #n_samples = 2
-#n_samples = 488377
-n_samples = 500000
+n_samples = 488377
+#n_samples = 500000
 n_tot = n_snps*2*n_samples 
 #258839810
 #args
