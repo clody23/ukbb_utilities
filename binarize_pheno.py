@@ -16,6 +16,7 @@ outfile = sys.argv[3]
 col = {}
 col_index = {}
 final_dict = {}
+file_indexes = []
 for x in xrange(col_file.shape[0]):
 	key = col_file.iloc[x,:][1]
 	value = col_file.iloc[x,:][0]
@@ -28,6 +29,7 @@ for x in xrange(col_file.shape[0]):
 
 for line in fileinput.input(sys.argv[1]):
 	line = line.split('\t')
+	line = map(lambda x:x.strip(),line)
 	if line[0].startswith('Sample'):
 		header = line
 		for k,y in col.iteritems():
@@ -35,10 +37,13 @@ for line in fileinput.input(sys.argv[1]):
 				index = header.index(z)
 				col_index[k].append(index)
 	else:
+		file_indexes.append(str(line[0]))
 		for k in col_index:
 			v = sp.array(line)
 			vv = v[col_index[k]]
-			if 'Yes' in vv and 'No' not in vv and 'Not' not in vv:
+			if 'deaf' in vv and 'No' not in vv and 'Not' not in vv: #for cochlear phenotype
+				final_dict[k].append('Yes')
+			elif 'Yes' in vv and 'No' not in vv and 'Not' not in vv:
 				final_dict[k].append('Yes')
 			elif 'No' in vv and 'Yes' not in vv and 'Not' not in vv:
 				final_dict[k].append('No')
@@ -48,6 +53,7 @@ for line in fileinput.input(sys.argv[1]):
 				final_dict[k].append('NA')
 
 df = pd.DataFrame(final_dict)
-df.to_csv(outfile,sep='\t',header=True,index=None)
+df = df.set_index([file_indexes])
+df.to_csv(outfile,sep='\t',header=True,index=True)
 
 #new_header= 'Sample_ID\t'+'\t'.join(columns)+'\n'
