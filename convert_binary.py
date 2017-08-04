@@ -28,13 +28,14 @@ for x in xrange(n_tot):
 
 c = 0
 start = 0
-while c<=(n_snps*2):
+while c<(n_snps*2):
 	i = (n_samples*2)
 	end = start+i
 	f_slice = f_values[start:end]
 	aa = sp.array(f_slice).reshape(n_samples,2) #take one allele at the time
 	ea[:,c:(c+2)] = aa #populate the empty array 
 	start = end
+	print c
 	c +=2
 
 sp.savetxt(out,ea,delimiter='\t',fmt='%1.2f')
