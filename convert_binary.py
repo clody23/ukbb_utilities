@@ -32,7 +32,7 @@ while c<(n_snps*2):
 	i = (n_samples*2)
 	end = start+i
 	f_slice = f_values[start:end]
-	aa = sp.array(f_slice).reshape(n_samples,2) #take one allele at the time
+	aa = sp.array(f_slice).reshape(n_samples,2) #take one snp at the time
 	ea[:,c:(c+2)] = aa #populate the empty array 
 	start = end
 	print c
