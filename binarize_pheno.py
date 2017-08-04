@@ -37,21 +37,24 @@ for line in fileinput.input(sys.argv[1]):
 				index = header.index(z)
 				col_index[k].append(index)
 	else:
+		print 'Processing sample {0}'.format(str(line[0]))
 		file_indexes.append(str(line[0]))
 		for k in col_index:
 			v = sp.array(line)
-			vv = v[col_index[k]]
+			vv = str(v[col_index[k]])
 			if 'deaf' in vv and 'No' not in vv and 'Not' not in vv: #for cochlear phenotype
 				final_dict[k].append('Yes')
 			elif 'Yes' in vv and 'No' not in vv and 'Not' not in vv:
 				final_dict[k].append('Yes')
 			elif 'No' in vv and 'Yes' not in vv and 'Not' not in vv:
 				final_dict[k].append('No')
+			elif 'No' in vv and 'deaf' in vv and 'Not' not in vv: #for cochlear phenotype
+				final_dict[k].append('NA')
 			elif 'Yes' in vv and 'No' in vv and 'Not' not in vv:
 				final_dict[k].append('NA')
 			else:
 				final_dict[k].append('NA')
-
+print 'Done.'
 df = pd.DataFrame(final_dict)
 df = df.set_index([file_indexes])
 df.to_csv(outfile,sep='\t',header=True,index=True)
