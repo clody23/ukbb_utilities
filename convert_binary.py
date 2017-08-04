@@ -28,7 +28,7 @@ for x in xrange(n_tot):
 
 c = 0
 start = 0
-while c<(n_snps*2):
+while c<=(n_snps*2):
 	i = (n_samples*2)
 	end = start+i
 	f_slice = f_values[start:end]
