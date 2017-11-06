@@ -26,13 +26,14 @@ for x in xrange(col_file.shape[0]):
 		final_dict[key] = []
 	else:
 		col[key].append(value)
-
 for line in fileinput.input(sys.argv[1]):
 	line = line.split('\t')
 	line = map(lambda x:x.strip(),line)
 	if line[0].startswith('Sample'):
 		header = line
+		print header
 		for k,y in col.iteritems():
+			print k,y
 			for z in y:
 				index = header.index(z)
 				col_index[k].append(index)
