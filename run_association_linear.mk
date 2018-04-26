@@ -17,9 +17,9 @@ assoc_type ?= logistic
 mpheno ?= 1
 maf ?= 0.01
 missing ?=0.1
-
+covar_number ?= 1,2,3,4,5
 #all: $(out_dir)/tmp/subset_pheno.tsv $(out_dir)/plink.done clean
-all: $(out_dir)/plink.done clean
+all: $(out_dir)/plink.done clean $(phenotype_file).transf.tsv
 
 include $(conf)
 
@@ -30,10 +30,14 @@ include $(conf)
 	echo 'Family_ID' > $(out_dir)/tmp/genotype.samples.txt; cut -f 1 $(ped_file_name)*.ped  >> $(out_dir)/tmp/genotype.samples.txt &&\
 	python /data/genomics/cc926/scripts/merge_tables.py $(out_dir)/tmp/genotype.samples.txt  $(out_dir)/tmp/subset_pheno.tmp.tsv Family_ID Family_ID inner $(out_dir)/tmp/subset_pheno.tsv
 
-$(out_dir)/plink.done: $(phenotype_file) $(covariate_file) $(samples_file)
+$(phenotype_file).transf.tsv: $(phenotype_file)
+	python /data/genomics/cc926/scripts/ukbb_utilities/normalise_ukbb_pheno.py $(phenotype_file) gauss $(phenotype_file).transf.tsv
+
+
+$(out_dir)/plink.done: $(phenotype_file).transf.tsv $(covariate_file) $(samples_file)
 	mkdir -p $(out_dir)/plink_results &&\
-	plink --noweb --file $(ped_file_name) --pheno $(phenotype_file) --mpheno $(mpheno) --covar $(covariate_file) --linear --beta --out $(out_dir)/plink_results/$(out_prefix) --maf $(maf) --geno $(missing) --keep $(samples_file) --adjust &&\
-	touch plink.done
+	/data/genomics/cc926/tools/plink --file $(ped_file_name) --pheno $(phenotype_file).transf.tsv --mpheno $(mpheno) --covar $(covariate_file) --linear --beta --out $(out_dir)/plink_results/$(out_prefix) --maf $(maf) --geno $(missing) --keep $(samples_file) --adjust --covar-number $(covar_number)  &&\
+	touch plink.done 
 
 .PHONY: clean
 clean:
